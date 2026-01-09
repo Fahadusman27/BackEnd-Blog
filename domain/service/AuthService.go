@@ -17,12 +17,12 @@ type Auth interface {
 }
 
 type AuthService struct {
-	authRepo AuthRepository
+	authRepo AuthRepo
 	secret   string
 	expiry   time.Duration
 }
 
-type AuthRepository interface {
+type AuthRepo interface {
 	CreateUsers(Users *Register) error
 	FindByEmail(Email string) (*Login, error)
 	GetProfile(ID int) (*Profile, error)
@@ -39,8 +39,8 @@ func (a *AuthService) GenerateToken(id int, role string) (string, error) {
 	return token.SignedString([]byte(a.secret))
 }
 
-func (s *AuthService) LoginAllRoles(email, password string) (string, string, error) {
-    user, err := s.authRepo.FindByEmail(email)
+func (a *AuthService) LoginAllRoles(email, password string) (string, string, error) {
+    user, err := a.authRepo.FindByEmail(email)
     if err != nil {
         return "", "", errors.New("user tidak ditemukan")
     }
@@ -50,7 +50,7 @@ func (s *AuthService) LoginAllRoles(email, password string) (string, string, err
         return "", "", errors.New("password salah")
     }
 
-    token, err := s.GenerateToken(user.ID, user.RoleName)
+    token, err := a.GenerateToken(user.ID, user.RoleName)
     if err != nil {
         return "", "", err
     }
@@ -58,8 +58,8 @@ func (s *AuthService) LoginAllRoles(email, password string) (string, string, err
     return token, user.RoleName, nil
 }
 
-func (s *AuthService) LoginAdminOnly(email, password string) (string, error) {
-    user, err := s.authRepo.FindByEmail(email)
+func (a *AuthService) LoginAdminOnly(email, password string) (string, error) {
+    user, err := a.authRepo.FindByEmail(email)
     if err != nil {
         return "", errors.New("akun admin tidak ditemukan")
     }
@@ -73,7 +73,7 @@ func (s *AuthService) LoginAdminOnly(email, password string) (string, error) {
         return "", errors.New("password salah")
     }
 
-    token, err := s.GenerateToken(user.ID, user.RoleName)
+    token, err := a.GenerateToken(user.ID, user.RoleName)
     if err != nil {
         return "", err
     }
@@ -108,28 +108,6 @@ func (a *AuthService) Profile(UserID int) (*Profile, error) {
 
 	return profile,err
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
