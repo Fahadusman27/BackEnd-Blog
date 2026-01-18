@@ -8,7 +8,7 @@ type Post struct {
 	KategoriID     int       `json:"Kategori_ID"`
 	TitleID        int       `json:"Title_ID"`
 	Slug           string    `json:"Slug"`
-	Content        string    `json:"COntent"`
+	Content        string    `json:"Content"`
 	Featured_Image string    `json:"featured_image"`
 	Status         string    `json:"Status"`
 	CreatedAt      time.Time `json:"CreatedAt"`

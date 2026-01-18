@@ -13,24 +13,24 @@ func Search(keyword string) (map[string]interface{}, error) {
 
 	user, err := SearchByUsername(keyword)
 	if err != nil {
-		fmt.Println("User Tidak Ditemukan: %v\n", err)
+		fmt.Printf("User Tidak Ditemukan: %v\n", err)
 	}
 
 	kategori, err := SearchByKategori(keyword)
 	if err != nil {
-		fmt.Println("Kategori Tidak Ditemukan: %v\n", err)
+		fmt.Printf("Kategori Tidak Ditemukan: %v\n", err)
 	}
 
 	title, err := SearchByTitle(keyword)
 	if err != nil {
-		fmt.Println("Judul Tidak Ditemukan: %v\n", err)
+		fmt.Printf("Judul Tidak Ditemukan: %v\n", err)
 	}
 
-	result := map[string]interface{} {
-		"found_user":	user,
-		"found_category":	kategori,
-		"found,title":	title,
-		"search_keyword":	keyword,
+	result := map[string]interface{}{
+		"found_user":     user,
+		"found_category": kategori,
+		"found,title":    title,
+		"search_keyword": keyword,
 	}
 
 	return result, nil
