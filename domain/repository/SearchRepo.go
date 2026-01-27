@@ -3,11 +3,20 @@ package repository
 import (
 	"BLOG/domain/config"
 	. "BLOG/domain/model"
+	"database/sql"
 )
+
+type SearchRepository struct {
+	db *sql.DB
+}
+
+func NewSearchRepository(db *sql.DB) *SearchRepository {
+	return &SearchRepository{db: db}
+}
 
 //Admin
 
-func SeacrhByID(ID int) (*Users, error) {
+func (s *SearchRepository) SeacrhByID(ID int) (*Users, error) {
 	user := new(Users)
 
 	query := `SELECT ID, Username, Picture, Email, RoleID, CreatedAt FROM Users WHERE id=$1`
@@ -23,7 +32,7 @@ func SeacrhByID(ID int) (*Users, error) {
 
 //User
 
-func SearchByUsername(username string) (*Users, error) {
+func (s *SearchRepository) SearchByUsername(username string) (*Users, error) {
 	user := new(Users)
 
 	searchPattern := "%" + username + "%"
@@ -39,12 +48,12 @@ func SearchByUsername(username string) (*Users, error) {
 	return user, nil
 }
 
-func SearchByKategori(Name string) (*Kategori, error) {
+func (s *SearchRepository) SearchByKategori(Name string) (*Kategori, error) {
 	Kategori := new(Kategori)
 
 	searchPattern := "%" + Name + "%"
 
-	query := `SELECT ID, Name FROM kategori WHERE Name LIKE $1`
+	query := `SELECT ID, Name, Slug FROM kategori WHERE Name LIKE $1`
 
 	err := config.DB.QueryRow(query, searchPattern).
 		Scan(&Kategori.ID, &Kategori.Name, &Kategori.Slug)
@@ -55,7 +64,7 @@ func SearchByKategori(Name string) (*Kategori, error) {
 	return Kategori, nil
 }
 
-func SearchByTitle(Name string) (*Title, error) {
+func (s *SearchRepository) SearchByTitle(Name string) (*Title, error) {
 	title := new(Title)
 
 	searchPattern := "%" + Name + "%"

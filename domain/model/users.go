@@ -24,11 +24,14 @@ type Register struct {
 	Email    string `json:"Email"`
 	Password string `json:"Password"`
 	Role     int    `json:"RoleID"`
+	CreatedAt	time.Time	`json:"CreatedAt"`
 }
 
 type Profile struct {
 	ID       int    `json:"id"`
+	Name	string	`json:"Name"`
 	Username string `json:"Username"`
 	Picture  string `json:"Picture"`
 	Email    string `json:"Email"`
+	UpdatedAt	time.Time	`json:"UpadatedAt"`
 }

@@ -1,37 +1,71 @@
 package service
 
 import (
-	. "BLOG/domain/repository"
+	. "BLOG/domain/model"
 	"errors"
-	"fmt"
+
+	"github.com/gofiber/fiber/v2"
 )
 
-func Search(keyword string) (map[string]interface{}, error) {
+type SearchService struct {
+	repo SearchRepo
+}
+
+type SearchRepo interface {
+	SeacrhByID(ID int) (*Users, error)
+	SearchByUsername(username string) (*Users, error)
+	SearchByKategori(Name string) (*Kategori, error)
+	SearchByTitle(Name string) (*Title, error)
+}
+
+func NewSearchService(repo SearchRepo) *SearchService {
+	return &SearchService{repo: repo}
+}
+
+func (s *SearchService) Search(keyword string) (map[string]interface{}, error) {
 	if keyword == "" {
 		return nil, errors.New("Kata Kunci tidak ada")
 	}
 
-	user, err := SearchByUsername(keyword)
+	var userFound interface{}
+	var kategoriFound interface{}
+	var titleFound interface{}
+
+	u, err := s.repo.SearchByUsername(keyword)
+	if err == nil {
+		userFound = u
+	}
+
+	k, err := s.repo.SearchByKategori(keyword)
+	if err == nil {
+		kategoriFound = k
+	}
+
+	t, err := s.repo.SearchByTitle(keyword)
+	if err == nil {
+		titleFound = t
+	}
+
+	return map[string]interface{}{
+		"users":      userFound,
+		"categories": kategoriFound,
+		"articles":   titleFound,
+		"query":      keyword,
+	}, nil
+}
+
+func (s *SearchService) SearchServices(c *fiber.Ctx) error {
+	keyword := c.Query("q")
+
+	result, err := s.Search(keyword)
 	if err != nil {
-		fmt.Printf("User Tidak Ditemukan: %v\n", err)
+		return c.Status(400).JSON(fiber.Map{
+			"error": err.Error(),
+		})
 	}
 
-	kategori, err := SearchByKategori(keyword)
-	if err != nil {
-		fmt.Printf("Kategori Tidak Ditemukan: %v\n", err)
-	}
-
-	title, err := SearchByTitle(keyword)
-	if err != nil {
-		fmt.Printf("Judul Tidak Ditemukan: %v\n", err)
-	}
-
-	result := map[string]interface{}{
-		"found_user":     user,
-		"found_category": kategori,
-		"found,title":    title,
-		"search_keyword": keyword,
-	}
-
-	return result, nil
+	return c.JSON(fiber.Map{
+		"message": "Hasil Pencarian",
+		"data":    result,
+	})
 }

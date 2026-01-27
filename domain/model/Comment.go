@@ -4,9 +4,10 @@ import "time"
 
 type Komen struct {
 	ID           int       `json:"id"`
-	Post_ID      int       `json:"Post_id"`
+	PostID      int       `json:"PostID"`
 	UserID       int       `json:"UserID"`
 	Comment_Text string    `json:"isi_komen"`
 	Status       string    `json:"Status"`
-	CreatedAt    time.Time `json:"creadted_at"`
+	CreatedAt    time.Time `json:"CreatedAt"`
+	UpdatedAt	time.Time	`json:"UpdatedAt"`
 }

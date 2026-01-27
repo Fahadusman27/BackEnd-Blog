@@ -3,6 +3,7 @@ package repository
 import (
 	"BLOG/domain/model"
 	"database/sql"
+	"time"
 )
 
 type AuthRepository struct {
@@ -11,15 +12,6 @@ type AuthRepository struct {
 
 func NewAuthRepository(db *sql.DB) *AuthRepository {
 	return &AuthRepository{db}
-}
-
-func (r *AuthRepository) CreateAdmin(user *model.Register) error {
-	query := `
-		INSERT INTO users (Email, Username, Password, RoleID)
-		VALUES ($1, $2, $3, 1)
-	`
-	_, err := r.db.Exec(query, user.Email, user.Username, user.Password)
-	return err
 }
 
 func (r *AuthRepository) CreateUsers(user *model.Register) error {
@@ -31,7 +23,7 @@ func (r *AuthRepository) CreateUsers(user *model.Register) error {
 	return err
 }
 
-func (r *AuthRepository) FindByEmail(email string) (model.Login, error) {
+func (r *AuthRepository) FindByEmail(Email string) (model.Login, error) {
 	query := `
 		SELECT u.ID, u.Email, u.Password, r.Name 
 		FROM users u
@@ -39,7 +31,7 @@ func (r *AuthRepository) FindByEmail(email string) (model.Login, error) {
 		WHERE u.Email = $1`
 
 	var login model.Login
-	err := r.db.QueryRow(query, email).
+	err := r.db.QueryRow(query, Email).
 		Scan(&login.ID, &login.Email, &login.Password, &login.RoleName)
 	
 	if err != nil {
@@ -49,8 +41,16 @@ func (r *AuthRepository) FindByEmail(email string) (model.Login, error) {
 	return login, nil
 }
 
+func (r *AuthRepository) UpadateProfile(ID int, profile *model.Profile) error {
+	query := `UPDATE users SET Username = $1, Picture = $2, Name = $3, UpdatedAt = $4 WHERE id = $5`
+
+	_, err := r.db.Exec(query, profile.Username, profile.Picture, profile.Name, time.Now(), ID)
+
+	return err
+}
+
 func (r *AuthRepository) GetProfile(ID int) (model.Profile, error) {
-	query :=`SELECT ID, Username, Email, Picture FROM users WHERE ID=$1`
+	query :=`SELECT ID, Email, Picture, Username FROM users WHERE ID=$1`
 	
 	var Profile model.Profile
 	err := r.db.QueryRow(query, ID).
