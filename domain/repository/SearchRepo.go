@@ -11,7 +11,7 @@ type SearchRepository struct {
 }
 
 func NewSearchRepository(db *sql.DB) *SearchRepository {
-	return &SearchRepository{db: db}
+	return &SearchRepository{}
 }
 
 //Admin

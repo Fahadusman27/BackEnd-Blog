@@ -7,6 +7,8 @@ type Post struct {
 	UserID         int       `json:"Users_ID"`
 	KategoriID     int       `json:"Kategori_ID"`
 	TitleID        int       `json:"Title_ID"`
+	LikeID         int       `json:"LikeID"`
+	ShareID        int       `json:"ShareID"`
 	Slug           string    `json:"Slug"`
 	Content        string    `json:"Content"`
 	Featured_Image string    `json:"featured_image"`

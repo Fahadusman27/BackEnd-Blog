@@ -8,6 +8,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Komentar
+
 type KomenService struct {
 	repo CommentRepo
 }
@@ -17,7 +19,7 @@ type CommentRepo interface {
 }
 
 func NewCommentService(repo CommentRepo) *KomenService {
-	return &KomenService{repo: repo}
+	return &KomenService{}
 }
 
 func IsDirty(content string) bool {
@@ -77,5 +79,78 @@ func (k *KomenService) CommentService(c *fiber.Ctx) error {
 	
 	return c.JSON(fiber.Map{
 		"pesan" : "Komentar berhasil terkirim",
+	})
+}
+
+
+// Like
+
+type LikeService struct {
+	repo LikeRepo
+}
+
+type LikeRepo interface {
+	CreateLike(UserID, PostID int) (string, error)
+	CreateStatistikLike(PostID int) (int, error)
+}
+
+func NewLikeService(repo LikeRepo) *LikeService {
+	return &LikeService{repo : repo}
+}
+
+func (l *LikeService) LikeAction(c *fiber.Ctx) error {
+	PostID, _ := c.ParamsInt("PostID")
+
+	UserID, _ := c.Locals("UserID").(int)
+
+	status, err := l.repo.CreateLike(UserID, PostID)
+
+	if err != nil{
+		return c.Status(500).JSON(fiber.Map{
+			"error" : "Gagal Like postingan",
+		})
+	}
+
+	total, _ := l.repo.CreateStatistikLike(PostID)
+
+	return c.JSON(fiber.Map{
+		"pesan" : status,
+		"total like" : total,
+	})
+}
+
+// Share
+
+type ShareService struct {
+	repo ShareRepo
+}
+
+type ShareRepo interface {
+	PostShare(UserID, PostID int, Platform string) error
+	CreateStatistikShare(PostID int) (int, error)
+}
+
+func NewShareService(repo ShareRepo) *ShareService {
+	return &ShareService{repo : repo}
+}
+
+func (s *ShareService) ShareAction(c *fiber.Ctx) error {
+	PostID, _ := c.ParamsInt("PostID")
+
+	Platform := c.Query("p", "general")
+
+	UserID := 1
+
+	if err := s.repo.PostShare(UserID, PostID, Platform); err != nil{
+		return c.Status(500).JSON(fiber.Map{
+			"error" : "Gagal Share",
+		})
+	}
+
+	total, _ := s.repo.CreateStatistikShare(PostID)
+
+	return c.JSON(fiber.Map{
+		"pesan" : "Berhasil share ke " + Platform,
+		"total share" : total,
 	})
 }
