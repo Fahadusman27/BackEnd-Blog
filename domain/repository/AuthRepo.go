@@ -61,18 +61,3 @@ func (r *AuthRepository) GetProfile(ID int) (model.Profile, error) {
 	
 	return Profile, nil
 }
-
-//fitur admin
-
-func (r *AuthRepository) RoleSelected(ID int) (model.Role, error) {
-	query :=`SELECT ID, Name FROM role WHERE ID=$1`
-
-	var role model.Role
-	err := r.db.QueryRow(query, ID).
-	Scan(&role.ID, &role.Name)
-	if err != nil {
-		return model.Role{}, err
-	}
-
-	return role, nil
-}

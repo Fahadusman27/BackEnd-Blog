@@ -19,10 +19,10 @@ func NewSearchRepository(db *sql.DB) *SearchRepository {
 func (s *SearchRepository) SeacrhByID(ID int) (*Users, error) {
 	user := new(Users)
 
-	query := `SELECT ID, Username, Picture, Email, RoleID, CreatedAt FROM Users WHERE id=$1`
+	query := `SELECT ID, Username, Picture, Email, CreatedAt FROM Users WHERE id=$1`
 
 	err :=config.DB.QueryRow(query, ID).
-		Scan(&user.ID, &user.Username, &user.Email, &user.Picture, &user.Role, &user.CreatedAt)
+		Scan(&user.ID, &user.Username, &user.Email, &user.Picture, &user.CreatedAt)
 	if err != nil {
 		return nil, err
 	}

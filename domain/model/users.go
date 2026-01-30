@@ -8,7 +8,6 @@ type Users struct {
 	Picture      string    `json:"Picture"`
 	Email        string    `json:"Email"`
 	PasswordHash string    `json:"-"`
-	Role         int       `json:"RoleID"`
 	CreatedAt    time.Time `json:"CreatedAt"`
 }
 

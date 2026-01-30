@@ -24,7 +24,7 @@ func (k *CommentRepository) CreateComment(UserID int, PostID int, content string
 	komen := new(Komen)
 
 	err := config.DB.QueryRow(query, PostID, content, UserID, "aktif").
-		Scan(&komen.ID, &komen.PostID, &komen.Comment_Text, &komen.UserID, komen.Status, &komen.CreatedAt)
+		Scan(&komen.ID, &komen.PostID, &komen.Comment_Text, &komen.UserID, &komen.Status, &komen.CreatedAt, &komen.UpdatedAt)
 
 	if err != nil {
 		return nil, err

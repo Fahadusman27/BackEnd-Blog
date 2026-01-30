@@ -8,13 +8,15 @@ import (
 
 	"fmt"
 
+
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gofiber/fiber/v2"
 )
 
 func InitDB() *sql.DB {
-	connStr := "host=localhost port=5432 user=fahad password=Fahad2004 dbname=fahad sslmode=disable"
+	connStr := "root:Fkwini2002@tcp(localhost:3306)/BLOG?parseTime=true"
 	var err error
-	db, err := sql.Open("postgres", connStr)
+	db, err := sql.Open("mysql", connStr)
 	if err != nil {
 		log.Fatal("Gagal koneksi ke database:", err)
 	}

@@ -6,7 +6,7 @@ import (
 	"os"
 	"fmt"
 
-	_ "github.com/lib/pq"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var DB *sql.DB
@@ -14,7 +14,7 @@ var DB *sql.DB
 
 func ConnectDB() *sql.DB {
 	dsn := os.Getenv("DB_DSN")
-	db, err := sql.Open("postgres", dsn)
+	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal(err)
 	}

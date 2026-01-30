@@ -65,6 +65,16 @@ func (k *KomenService) CommentService(c *fiber.Ctx) error {
 		})
 	}
 
+	UserID := comment.ID
+
+	res, err := k.Comment(UserID, comment.PostID, comment.Comment_Text)
+
+	if err != nil {
+		return  c.Status(400).JSON(fiber.Map{
+			"pesan" : err.Error(),
+		})
+	}
+
 	if strings.TrimSpace(comment.Comment_Text) == "" {
 		return c.Status(400).JSON(fiber.Map{
 			"error" : "tidak boleh kosong!",
@@ -79,6 +89,7 @@ func (k *KomenService) CommentService(c *fiber.Ctx) error {
 	
 	return c.JSON(fiber.Map{
 		"pesan" : "Komentar berhasil terkirim",
+		"data" : res,
 	})
 }
 

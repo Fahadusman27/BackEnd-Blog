@@ -29,5 +29,5 @@ func main() {
 	route.PostRoute(app, comment, Like, Share)
 	route.SearchRoute(app, search)
 
-    app.Listen(":8080")
+    app.Listen(":3306")
 }
